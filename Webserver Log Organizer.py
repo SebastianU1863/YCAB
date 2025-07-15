@@ -31,7 +31,6 @@ def organize_log(path):
     print(time.time()-x)
     return df
 
-
 def to_csv(data_frame):
     try:
         data_frame.to_csv(r"C:\Users\SHU\Downloads\organized_log_printout_webserver.csv")

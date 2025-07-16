@@ -1,6 +1,3 @@
-import pandas as pd
-import numpy as np
-import time
 import tkinter as tk
 import sys
 from tkinter import filedialog

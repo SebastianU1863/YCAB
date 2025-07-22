@@ -60,9 +60,9 @@ def parse_laravel_log(log_path):
 
     return parsed_rows
 
-def to_csv(parsed_rows):
+def to_csv(parsed_rows, output_file):
     try:
-        with open(r"C:\Users\SHU\Downloads\organized_log_printout_errors.csv", 'w', newline='', encoding='utf-8') as f:
+        with open(output_file, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=["timestamp", "reason", "message", "code", "file", "line"])
             writer.writeheader()
             writer.writerows(parsed_rows)
@@ -70,4 +70,6 @@ def to_csv(parsed_rows):
         popup("Please select a file.")
         sys.exit()
 
-to_csv(open_file_dialog())
+#output_file is the location of the file where the data is outputted
+output_file = r"C:\Users\SHU\Downloads\organized_log_printout_errors.csv"
+to_csv(open_file_dialog(), output_file)

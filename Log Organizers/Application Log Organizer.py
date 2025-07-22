@@ -16,14 +16,14 @@ def open_file_dialog():
         return organize_log(file_path)
 
 def organize_log(path):
-    x = time.time()
-    c = ["Timestamp", "Level", "Event", "Actor", "Message"]
+    start_time = time.time()
+    header = ["Timestamp", "Level", "Event", "Actor", "Message"]
     try:
         f = open(path).read().splitlines()
     except:
         popup("Unable to read file. This program can only accept .org or .txt files.")
         sys.exit()
-    df = pd.DataFrame(columns=c)
+    data_frame = pd.DataFrame(columns=header)
     for line in f:
         line = line.split()
         Timestamp = ' '.join(line[:2])
@@ -31,13 +31,13 @@ def organize_log(path):
         Event = line[3]
         Actor = line[4]
         Message = ' '.join(line[4:])
-        df.loc[len(df)] = [Timestamp,Level,Event,Actor,Message]
-    print(time.time()-x)
-    return df
+        data_frame.loc[len(data_frame)] = [Timestamp,Level,Event,Actor,Message]
+    print(time.time()-start_time)
+    return data_frame
 
-def to_csv(data_frame):
+def to_csv(data_frame, output_file):
     try:
-        data_frame.to_csv(r"C:\Users\SHU\Downloads\organized_log_printout_application.csv")
+        data_frame.to_csv(output_file)
     except:
         popup("Please select a file.")
         sys.exit()
@@ -45,4 +45,5 @@ def to_csv(data_frame):
 def popup(text: str):
     messagebox.showinfo("Error", text)
 
-to_csv(open_file_dialog())
+output_file = r"C:\Users\SHU\Downloads\organized_log_printout_application.csv"
+to_csv(open_file_dialog(), output_file)

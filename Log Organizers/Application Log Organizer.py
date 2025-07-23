@@ -15,11 +15,11 @@ def open_file_dialog():
         print(f"Selected file: {file_path}")
         return organize_log(file_path)
 
-def organize_log(path):
+def organize_log(log_path):
     start_time = time.time()
     header = ["Timestamp", "Level", "Event", "Actor", "Message"]
     try:
-        f = open(path).read().splitlines()
+        f = open(log_path).read().splitlines()
     except:
         popup("Unable to read file. This program can only accept .org or .txt files.")
         sys.exit()
@@ -45,5 +45,5 @@ def to_csv(data_frame, output_file):
 def popup(text: str):
     messagebox.showinfo("Error", text)
 
-output_file = r"C:\Users\SHU\Downloads\organized_log_printout_application.csv"
+output_file = "organized_log_printout_application.csv"
 to_csv(open_file_dialog(), output_file)

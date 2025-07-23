@@ -14,12 +14,12 @@ def open_file_dialog():
     )
     if file_path:
         print(f"Selected file: {file_path}")
-        return parse_laravel_log(file_path)
+        return organize_log(file_path)
 
 def popup(text: str):
     messagebox.showinfo("Error", text)
 
-def parse_laravel_log(log_path):
+def organize_log(log_path):
 
     with open(log_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -71,5 +71,5 @@ def to_csv(parsed_rows, output_file):
         sys.exit()
 
 #output_file is the location of the file where the data is outputted
-output_file = r"C:\Users\SHU\Downloads\organized_log_printout_errors.csv"
+output_file = "organized_log_printout_errors.csv"
 to_csv(open_file_dialog(), output_file)

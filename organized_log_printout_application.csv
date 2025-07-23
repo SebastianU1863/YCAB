@@ -1,0 +1,5 @@
+,Timestamp,Level,Event,Actor,Message
+0,2025-06-05 10:25:14,INFO,user_login:,johndoe,johndoe from 192.168.1.101 - SUCCESS
+1,2025-06-05 10:27:30,WARN,file_upload:,johndoe,johndoe tried uploading invoice.exe - REJECTED (disallowed file type)
+2,2025-06-05 10:28:45,ERROR,db_query_failure:,admin,admin - SELECT * FROM users WHERE id='abc123'; - SQL syntax error
+3,2025-06-05 10:30:01,INFO,permission_change:,admin,admin changed johndoe role to editor

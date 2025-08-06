@@ -1,0 +1,836 @@
+import pandas as pd
+import numpy as np
+import warnings
+from datetime import date
+
+
+
+warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl.worksheet._reader')
+df_program_list = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Program List")
+df_enablers = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Enablers")
+df_scholarship = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Scholarship")
+df_vocational_training = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Vocational Training")
+df_educators_program = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Educators Program")
+df_youth_learn_program = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Youth Learn Program")
+df_youth_earn = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Youth Earn")
+df_RBB = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="RBB")
+df_mothers_learn_program = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Mothers Learn Program")
+df_mothers_earn = pd.read_excel(r"C:\Users\SHU\Downloads\MothersEarn_MasterDatabase.xlsx", sheet_name="Mothers Earn")
+df_like_minded_organization = pd.read_excel(r"C:\Users\SHU\Downloads\LikeMindedOrganization_MasterDatabase.xlsx", sheet_name="Like-minded Org")
+df_income_expenditure = pd.read_excel(r"C:\Users\SHU\Downloads\FA_IncomeVsExpenditure.xlsx", sheet_name="Income vs Expenditure")
+df_partnership = pd.read_excel(r"C:\Users\SHU\Downloads\Partnership_MasterDatabase.xlsx", sheet_name="Partnership")
+df_HC_data_karyawan = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Data Karyawan")
+df_HC_data_pengembangan_karyawan = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Data Pengembangan Karyawan")
+df_HC_internship_and_volunteering = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Internship & Volenteering")
+df_HC_turnover_and_retention = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Turnover & Retention")
+df_HC_salary = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Salary")
+df_HC_data_surat_peringatan = pd.read_excel(r"C:\Users\SHU\Downloads\HC_MasterDatabase.xlsx", sheet_name="HC Data Surat Peringatan")
+df_communication = pd.read_excel(r"C:\Users\SHU\Downloads\Comms_MasterDatabase.xlsx", sheet_name="Communication")
+
+df_program_list.columns = df_program_list.iloc[0]
+df_enablers.columns = df_enablers.iloc[0]
+df_scholarship.columns = df_scholarship.iloc[0]
+df_vocational_training.columns = df_vocational_training.iloc[0]
+df_educators_program.columns = df_educators_program.iloc[0]
+df_youth_learn_program.columns = df_youth_learn_program.iloc[0]
+df_youth_earn.columns = df_youth_earn.iloc[0]
+df_RBB.columns = df_RBB.iloc[0]
+df_mothers_earn.columns = df_mothers_earn.iloc[0]
+df_mothers_learn_program.columns = df_mothers_learn_program.iloc[0]
+df_like_minded_organization.columns = df_like_minded_organization.iloc[0]
+df_income_expenditure.columns = df_income_expenditure.iloc[0]
+df_partnership.columns = df_partnership.iloc[0]
+df_HC_data_karyawan.columns = df_HC_data_karyawan.iloc[0]
+df_HC_data_pengembangan_karyawan.columns = df_HC_data_pengembangan_karyawan.iloc[0]
+df_HC_internship_and_volunteering.columns = df_HC_internship_and_volunteering.iloc[0]
+df_HC_turnover_and_retention.columns = df_HC_turnover_and_retention.iloc[0]
+df_HC_salary.columns = df_HC_salary.iloc[0]
+df_HC_data_surat_peringatan.columns = df_HC_data_surat_peringatan.iloc[0]
+df_communication.columns = df_communication.iloc[0]
+
+df_program_list = df_program_list.iloc[3:].reset_index(drop=True)
+df_enablers = df_enablers.iloc[3:].reset_index(drop=True)
+df_scholarship = df_scholarship.iloc[3:].reset_index(drop=True)
+df_vocational_training = df_vocational_training.iloc[3:].reset_index(drop=True)
+df_educators_program = df_educators_program.iloc[3:].reset_index(drop=True)
+df_youth_learn_program = df_youth_learn_program.iloc[3:].reset_index(drop=True)
+df_youth_earn = df_youth_earn.iloc[3:].reset_index(drop=True)
+df_RBB = df_RBB.iloc[3:].reset_index(drop=True)
+df_mothers_earn = df_mothers_earn.iloc[3:].reset_index(drop=True)
+df_mothers_learn_program = df_mothers_learn_program.iloc[3:].reset_index(drop=True)
+df_like_minded_organization = df_like_minded_organization.iloc[3:].reset_index(drop=True)
+df_income_expenditure = df_income_expenditure.iloc[3:].reset_index(drop=True)
+df_partnership = df_partnership.iloc[3:].reset_index(drop=True)
+df_HC_data_karyawan = df_HC_data_karyawan.iloc[3:].reset_index(drop=True)
+df_HC_data_pengembangan_karyawan = df_HC_data_pengembangan_karyawan.iloc[3:].reset_index(drop=True)
+df_HC_internship_and_volunteering = df_HC_internship_and_volunteering.iloc[3:].reset_index(drop=True)
+df_HC_turnover_and_retention = df_HC_turnover_and_retention.iloc[3:].reset_index(drop=True)
+df_HC_salary = df_HC_salary.iloc[1:].reset_index(drop=True)
+df_HC_data_surat_peringatan = df_HC_data_surat_peringatan.iloc[3:].reset_index(drop=True)
+df_communication = df_communication.iloc[3:].reset_index(drop=True)
+
+
+#Direct Beneficiaries
+def get_direct_beneficiaries(year: int):
+    return(
+        len(df_scholarship[(df_scholarship["Type of Beneficiary"] == 'Direct') & (df_scholarship["Cohort"].astype(str).str.contains(str(year), na=False))])+
+        len(df_vocational_training[(df_vocational_training["Type of Beneficiary"] == 'Direct') & (df_vocational_training["Entry Year"] == year)])+
+        len(df_educators_program[(df_educators_program["Type of Beneficiary"] == 'Direct') & (df_educators_program["Program Date"].astype(str).str.contains(str(year), na=False))])+
+        len(df_youth_learn_program[(df_youth_learn_program["Type of Beneficiary"] == 'Direct') & (df_youth_learn_program["Program Date"].astype(str).str.contains(str(year), na=False))])+
+        len(df_youth_earn[(df_youth_earn["Type of Beneficiary"] == 'Direct') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])+
+        len(df_RBB[(df_RBB["Type of Beneficiary"] == 'Direct') & (df_RBB["Training Date"].astype(str).str.contains(str(year)))])+
+        len(df_mothers_learn_program[(df_mothers_learn_program["Type of Beneficiary"] == 'Direct') & (df_mothers_learn_program["Program Date"].astype(str).str.contains(str(year), na=False))])+
+        len(df_mothers_earn[(df_mothers_earn["Type of Beneficiary"] == 'Direct') & (df_mothers_earn["Year of Cycle 1"].astype(str).str.contains(str(year), na=False))])
+        )
+def like_minded_org(year: int):
+    return(
+        len(df_educators_program[(df_educators_program["Type of Beneficiary"] == 'Indirect') & (df_educators_program["Program Date"].astype(str).str.contains(str(year), na=False)) & (df_educators_program["Self-funded/Partner/Like-minded Organization?"] == "Like-minded Organization")])+
+        len(df_youth_learn_program[(df_youth_learn_program["Type of Beneficiary"] == 'Indirect') & (df_youth_learn_program["Program Date"].astype(str).str.contains(str(year), na=False)) & (df_youth_learn_program["Self-funded/Partner/Like-minded Organization?"] == "Like-minded Organization")])+
+        len(df_youth_earn[(df_youth_earn["Type of Beneficiary"] == 'Indirect') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False)) & (df_youth_earn["Self-funded/Partner/Like-minded Organization?"] == "Like-minded Organization")])+
+        len(df_mothers_learn_program[(df_mothers_learn_program["Type of Beneficiary"] == 'Indirect') & (df_mothers_learn_program["Program Date"].astype(str).str.contains(str(year), na=False)) & (df_mothers_learn_program["Self-funded/Partner/Like-minded Organization?"] == "Like-minded Organization")])
+        )
+#Indirect Beneficiaries
+def get_indirect_beneficiaries(year: int):
+    return(
+        len(df_educators_program[(df_educators_program["Type of Beneficiary"] == 'Indirect') & (df_educators_program["Program Date"].astype(str).str.contains(str(year), na=False))])+
+        len(df_youth_learn_program[(df_youth_learn_program["Type of Beneficiary"] == 'Indirect') & (df_youth_learn_program["Program Date"].astype(str).str.contains(str(year), na=False))])+
+        len(df_youth_earn[(df_youth_earn["Type of Beneficiary"] == 'Indirect') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])+
+        len(df_mothers_learn_program[(df_mothers_learn_program["Type of Beneficiary"] == 'Indirect') & (df_mothers_learn_program["Program Date"].astype(str).str.contains(str(year), na=False))])
+        )
+def number_of_rows(dataframe: pd.DataFrame, year: int):
+    return len(dataframe[dataframe["Program Date"].astype(str).str.contains(str(year), na=False)])
+
+def calculate_age(born: pd.Series,target_year: int):
+    today = date.today().replace(year=target_year)
+    born = pd.to_datetime(born, dayfirst=True, errors='coerce')
+
+    def get_age(b):
+        if pd.isna(b):
+            return None
+        return today.year - b.year - ((today.month, today.day) < (b.month, b.day))
+
+    return born.apply(get_age)
+
+def get_mothers_earn(year: int):
+    return len(df_mothers_earn[df_mothers_earn["Year of Cycle 1"].astype(str).str.contains(str(year), na=False)])
+
+def program_list_date_filter(target_year: int):
+    df_program_list["Start Date"] = pd.to_datetime(df_program_list["Start Date"], errors = 'coerce', dayfirst=True)
+    df_program_list["End Date"] = pd.to_datetime(df_program_list["End Date"], errors = 'coerce', dayfirst=True)
+    return df_program_list[(df_program_list["Start Date"].dt.year <= target_year) & (df_program_list["End Date"].dt.year >= target_year)]
+
+def HC_data_karyawan_date_filter(target_year: int):
+    df_HC_data_karyawan["Joining Date to YCAB"] = pd.to_datetime(df_HC_data_karyawan["Joining Date to YCAB"], errors = 'coerce', dayfirst=True)
+    df_HC_data_karyawan["Contract End Date"] = pd.to_datetime(df_HC_data_karyawan["Contract End Date"], errors = 'coerce', dayfirst=True)
+    return df_HC_data_karyawan[(df_HC_data_karyawan["Joining Date to YCAB"].dt.year <= target_year) & (df_HC_data_karyawan["Contract End Date"].dt.year >= target_year)]
+
+def get_scholarship(year: int):
+    return df_scholarship[df_scholarship["Cohort"].astype(str).str.contains(str(year), na=False)]
+
+def vocational_training(year: int):
+    return df_vocational_training[(df_vocational_training["Entry Year"] == year)]
+
+
+def mode_for_scholarships(year: int, df: pd.DataFrame):
+    mode_series = df["Type of Scholarship"].mode()
+    if not mode_series.empty:
+        return mode_series[0]
+    else:
+        return f"No scholarship data found for {year}."
+
+def mode_for_program_list(filtered_df_program_list: pd.DataFrame):
+    mode_series = filtered_df_program_list["Number of Beneficiaries"].mode()
+    if not mode_series.empty:
+        return mode_series[0]
+    else:
+        return f"No scholarship data found."
+
+def get_YCAB_income_sheet():
+    program_names = df_income_expenditure["Program Name"]
+    partner_names = df_income_expenditure["Partner Name"]
+    df_good_fund = pd.concat([df_income_expenditure["Year"],df_income_expenditure["Fund Category"],df_income_expenditure["Good Fund (Received)"]], axis = 1)
+    df_good_fund.rename(columns= {'Good Fund (Received)':'Income'}, inplace=True)
+    filtered_partnership = df_partnership[((~df_partnership["Program Name"].isin(program_names)) & (~df_partnership["Partner Name"].isin(partner_names)))]
+    df_secured_fund = pd.concat([filtered_partnership["Year"],filtered_partnership["Fund Category"],filtered_partnership["Secured Fund (Signed)"]], axis = 1)
+    df_secured_fund.rename(columns= {'Secured Fund (Signed)':'Income'}, inplace=True)
+    return pd.concat([df_good_fund,df_secured_fund], axis = 0).reset_index(drop=True)
+
+def communications_engagement(year: int, media: list):
+    return df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].isin(media))]["Total Engagement"].sum()
+
+def scholarship_date_filter(target_year: int):
+    df_scholarship["Latest Data Entry Date"] = pd.to_datetime(df_scholarship["Latest Data Entry Date"], errors='coerce', dayfirst = True)
+    df_graduated = df_scholarship[(df_scholarship["Latest Data Entry Date"].dt.year == target_year) & (df_scholarship["Participant Status"].isin(["Lulus"]))]
+    df_discontinued = df_scholarship[(df_scholarship["Latest Data Entry Date"].dt.year == target_year) & (df_scholarship["Participant Status"].isin(["Dibatalkan"]))]
+    df_scholarship["Cohort"] =  df_scholarship["Cohort"].astype(str).str[:4].astype(int)
+    df_active = pd.concat([df_scholarship[(df_scholarship["Cohort"] <= target_year) & (df_scholarship["Latest Data Entry Date"].dt.year > target_year) & (df_scholarship["Participant Status"].isin(["Dibatalkan", "Lulus"]))], df_scholarship[(df_scholarship["Cohort"] <= target_year) & (df_scholarship["Latest Data Entry Date"].dt.year >= target_year) & (df_scholarship["Participant Status"].isin(["Aktif"]))]], axis = 0).reset_index(drop=True)
+    return pd.concat([df_active,df_graduated,df_discontinued], axis = 0).reset_index(drop=True)
+
+def media_partner_per_tier(year: int, tier: str):
+    return df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Media Partner")) & (df_communication["Partner's Tier"].astype(str).str.contains(tier))]["Patner's Name"].nunique()
+
+def youth_earn_cycle_1_2_filter(year: int):
+    income_1 = pd.concat([df_youth_earn["Program Type"], df_youth_earn.iloc[:,20],df_youth_earn.iloc[:, 21], df_youth_earn.iloc[:, 22]], axis= 1)
+    income_2 = pd.concat([df_youth_earn["Program Type"], df_youth_earn.iloc[:,27],df_youth_earn.iloc[:, 28], df_youth_earn.iloc[:, 29]], axis= 1)
+    df = pd.concat([income_1,income_2],axis=0).reset_index(drop = True)
+    return df[df["Employment Date"].astype(str).str.contains(str(year))]
+
+def get_df_active_mothers_earn(target_year: int):
+    return df_mothers_earn[(df_mothers_earn["Year of Cycle 1"] <= target_year) & (df_mothers_earn["Year of Last Cycle"] >= target_year)]
+
+output_df = pd.DataFrame()
+
+def to_csv(data_frame, output_file):
+    data_frame.to_csv(output_file)
+
+YCAB_income_sheet = get_YCAB_income_sheet()
+for year in [2024,2025]:
+    df_youth_earn_cycle_1_2 = youth_earn_cycle_1_2_filter(year)
+    filtered_df_program_list = program_list_date_filter(year)
+    filtered_df_scholarship = scholarship_date_filter(year)
+    filtered_df_HC_data_karyawan = HC_data_karyawan_date_filter(year)
+    number_of_direct_beneficiaries = get_direct_beneficiaries(year)
+    number_of_indirect_beneficiaries = get_indirect_beneficiaries(year)
+    rows_in_mothers_earn = get_mothers_earn(year)
+    rows_in_mothers_learn = number_of_rows(df_mothers_learn_program,year)
+    rows_in_scholarship = len(get_scholarship(year))
+    rows_in_vocational_training = len(vocational_training(year))
+    rows_in_RBB = len(df_RBB[(df_RBB["Training Date"].astype(str).str.contains(str(year), na=False))])
+    rows_in_youth_learn = number_of_rows(df_youth_learn_program,year)
+    rows_in_educators_program = number_of_rows(df_educators_program,year)
+    df_active_mothers_earn = get_df_active_mothers_earn(year)
+    rows_in_youth_earn = len(df_youth_earn[(df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])
+
+    #Block 1
+    total_beneficiaries_1 = number_of_indirect_beneficiaries+number_of_direct_beneficiaries  
+    direct_beneficiaries_1 = number_of_direct_beneficiaries   
+    indirect_beneficiaries_1 = number_of_indirect_beneficiaries
+    mothers_1 = rows_in_mothers_earn+rows_in_mothers_learn
+    youth_1 = rows_in_youth_earn+rows_in_scholarship+rows_in_vocational_training+rows_in_RBB+rows_in_youth_learn
+    mothers_earn_1 = rows_in_mothers_earn
+    youth_earn_1 = rows_in_youth_earn
+    mothers_learn_1 = rows_in_mothers_learn
+    youth_learn_1 = rows_in_scholarship+rows_in_vocational_training+rows_in_RBB+rows_in_youth_learn
+    resilience_response_1 = 0
+    like_minded_org_1 = like_minded_org(year)
+
+    
+
+    #Block 2
+    completion_rate_2 = "N/A"
+    avg_post_test_score_2 = "N/A"
+    avg_satisfaction_2 = "N/A"
+    youth_learn_scholarship_2 = rows_in_scholarship
+    youth_learn_vocational_training_2 = rows_in_vocational_training
+    youth_learn_rumah_belajar_batik_2 = rows_in_RBB
+    youth_earn_scholarship_2 = len(df_youth_earn[(df_youth_earn["Program Type"] == 'Scholarship') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])
+    youth_earn_employment_2 = len(df_youth_earn[(df_youth_earn["Program Type"] == 'Employment') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])
+    youth_earn_rumah_belajar_batik_2 = len(df_youth_earn[(df_youth_earn["Program Type"] == 'RBB') & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])
+    avg_income_youth_2 = np.mean(df_youth_earn[(df_youth_earn.iloc[:,34].astype(str).str.contains(str(year), na=False))].iloc[:, 36])
+
+    #Block 3
+    completion_rate_3 = "N/A"
+    avg_post_test_score_3 = "N/A"
+    avg_satisfaction_3 = "N/A"
+
+    #Block 4
+    total_income_ycab_foundation_4 = YCAB_income_sheet[YCAB_income_sheet["Year"]==year]["Income"].sum()
+    restricted_4 = YCAB_income_sheet[(YCAB_income_sheet["Fund Category"] == "Restricted") & (YCAB_income_sheet["Year"]==year)]["Income"].sum()
+    unrestricted_4 = YCAB_income_sheet[(YCAB_income_sheet["Fund Category"] == "Unrestricted") & (YCAB_income_sheet["Year"]==year)]["Income"].sum()
+    sankey_chart_4 = "N/A"
+
+    #Block 5
+    total_digital_outreach_5 = communications_engagement(year, ["LinkedIn", "Instagram", "YouTube", "TikTok", "Website YCAB"])+len(df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].isin(["Media Partner", "KOL"]))])
+    social_media_engagement_5 = communications_engagement(year, ["LinkedIn", "Instagram", "YouTube", "TikTok"])
+    website_visitors_5 = communications_engagement(year, ["Website YCAB"])
+    media_coverage_5 = len(df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].isin(["Media Partner", "KOL"]))])
+    total_media_partner_5 = "N/A"
+    media_partner_per_tier_5 = [f"Tier 1: {media_partner_per_tier(year, "Tier 1")}", f"Tier 2: {media_partner_per_tier(year, "Tier 2")}", f"Tier 3: {media_partner_per_tier(year, "Tier 3")}", f"Tier 4: {media_partner_per_tier(year, "Tier 4")}"]
+
+    #Block 6
+    average_annual_expenses_6 = np.mean(df_HC_salary[df_HC_salary["Year"] == year]["Total Salary Paid to Employee"])
+    average_monthly_expenses_6 = np.mean(df_HC_salary[df_HC_salary["Year"] == year]["Total Salary Paid to Employee"])/12
+    number_of_employee_6 = "N/A"
+    average_age_6 = np.mean(calculate_age(filtered_df_HC_data_karyawan["Birth Date"],year))
+    average_gender_6 = len(filtered_df_HC_data_karyawan[filtered_df_HC_data_karyawan["Gender"] == "Laki-laki"])/len(filtered_df_HC_data_karyawan[filtered_df_HC_data_karyawan["Gender"] == "Perempuan"])
+    average_year_of_service_6 = "N/A"
+    average_turnover_rate_6 = "N/A"
+    
+    #Block 7
+    total_scholars_7 = len(filtered_df_scholarship)
+    total_school_university_7 = filtered_df_scholarship["Name of High School/University"].nunique()
+    most_scholarships_7 = mode_for_scholarships(year, filtered_df_scholarship)
+    income_range_7 = "N/A"
+    total_student_learn_7 = rows_in_vocational_training+rows_in_youth_learn+rows_in_RBB
+    total_program_7 = len(filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"])
+    income_range_7_2 = "N/A"
+    avg_length_of_work_7 = "N/A"
+
+    #Block 8
+    total_student_learn_8 = len(filtered_df_scholarship)
+    graduated_8 = len(filtered_df_scholarship[(filtered_df_scholarship["Graduation Year"]==year)&(filtered_df_scholarship["Participant Status"] == "Lulus")])
+    not_graduated_8 = len(filtered_df_scholarship) - len(filtered_df_scholarship[(filtered_df_scholarship["Graduation Year"]==year)&(filtered_df_scholarship["Participant Status"] == "Lulus")])
+    total_school_university_8 = filtered_df_scholarship["Name of High School/University"].nunique()
+    most_scholarships_8 = mode_for_scholarships(year, filtered_df_scholarship)
+    youth_earn_8 = len(df_youth_earn[(df_youth_earn["Program Type"] == "Scholarship") & (df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False)) & (df_youth_earn["NIK"].isin(df_scholarship["NIK"]))])
+    avg_income_8 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="Scholarship"]["Salary per month"]) #Drop null/empty values
+    avg_length_of_work_8 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="Scholarship"]["Length of Employment"])
+
+    #Block 9
+    youth_individual_data_9 = "N/A"
+
+    #Block 10
+    youth_individual_scholarship_data_10 = "N/A"
+
+    #Block 11
+    total_youth_learn_11 = rows_in_vocational_training+rows_in_youth_learn+rows_in_RBB
+    total_program_youth_learn_11 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
+    program_success_11 = "N/A"
+    completion_rate_11 = "N/A"
+
+    #Block 12
+    youth_earn_from_youth_learn_program_12 = len(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"])
+    avg_income_12 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Salary per month"])
+    avg_length_of_work_12 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Length of Employment"])
+    
+    #Block 13 - Bookmark
+    total_youth_earn_13 = "N/A"
+    youth_earn_from_scholarships_13 = "N/A"
+    youth_earn_from_youth_learn_program_13 = "N/A"
+    avg_youth_earn_income_13 = "N/A"
+    avg_length_of_work_13 = "N/A"
+    
+    #Block 14
+    linkedin_engagement_14 = "N/A"
+    youtube_engagement_14 = "N/A"
+    instagram_engagement_14 = "N/A"
+    tiktok_engagement_14 = "N/A"
+    website_visitors_14 = "N/A"
+    media_coverage_14 = "N/A"
+    media_partners_14 = "N/A"
+    media_coverage_14_2 = "N/A"
+
+    #Block 15
+    total_mothers_15 = rows_in_mothers_learn+len(df_active_mothers_earn)
+    mothers_got_loans_15 = len(df_active_mothers_earn)
+    avg_family_income_15 = np.nanmean(pd.concat([df_active_mothers_earn["Net Income per month (Cycle 1)"],df_active_mothers_earn["Net Income per month (Last Cycle)"]], axis=1))
+    total_children_got_scholarship_15 = len(df_scholarship[(df_scholarship["Cohort"].astype(str).str.contains(str(year), na=False)) & df_scholarship["Mother's NIK"].isin(df_active_mothers_earn["NIK"])])
+    total_program_mothers_learn_15 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique() 
+    program_success_15 = "N/A"
+    completion_rate_15 = "N/A"
+    
+    #Block 16
+    mothers_earn_individual_data_16 = "N/A"
+    mothers_earn_anak_pintar_16 = "N/A"
+
+    #Block 17
+    laporan_bisnis_17 = "N/A"
+    total_loan_17 = "N/A"
+    graph_loan_cycle_17 = "N/A"
+
+    #Block 18
+    total_educators_18 = rows_in_educators_program
+    indirect_student_18 = len(df_youth_learn_program[(df_youth_learn_program["Type of Beneficiary"] == 'Indirect') & (df_youth_learn_program["Program Date"].astype(str).str.contains(str(year), na=False)) & (df_youth_learn_program["Educator's NIK (if the beneficiary is from Educators Program)"].notnull())])
+    total_school_18 = df_educators_program[df_educators_program["Program Date"].astype(str).str.contains(str(year), na=False)]["Institution Name"].nunique()
+    program_for_educators_18 = program_for_educators = len(filtered_df_program_list[(filtered_df_program_list["Program Category"] == "Youth Learn") & (filtered_df_program_list["Beneficiary Category"] == "Educators")])
+    program_success_18 = "N/A"
+    completion_rate_18 = "N/A"
+
+    #Block 19
+    total_partners_19 = df_partnership[df_partnership["Year"]==year]["Partner Name"].nunique()
+    program_with_partner_19 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Fund Category"]=="Restricted")]["Program Name"].nunique()
+    total_enablers_19 = df_enablers[df_enablers["Date"].astype(str).str.contains(str(year), na=False)]["Enabler Name"].nunique()
+    
+    #Block 20
+    category_partner_20 = "N/A"
+    total_program_20 = "N/A"
+    total_funding_20 = "N/A"
+    avg_satisfaction_20 = "N/A"
+
+    #Block 21
+    total_program_enabler_21 = "N/A"
+    total_beneficiaries_21 = "N/A"
+
+
+    #Block 22
+    total_like_minded_organization_22 = "N/A"
+    total_funding_22 = "N/A"
+    total_program_22 = "N/A"
+    total_indirect_beneficiaries_22 = "N/A"
+
+    #Block 23
+    like_minded_org_detail_23 = "N/A"
+
+
+    #Block 24
+    total_activity_24 = 0
+    total_beneficiaries_24 = 0
+
+
+    #Block 25
+    total_program_youth_learn_25 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
+    most_program_beneficiaries_area_25 = "N/A"
+    program_success_25 = "N/A"
+    completion_rate_25 = "N/A"
+    mothers_program_25 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique()
+    program_success_25_2 = "N/A"
+    completion_rate_25_2 = "N/A"
+
+    #Block 26
+    detail_per_program_26 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique() + filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
+    delta_knowledge_challenge_26 = "N/A"
+    average_delta_knowledge_26 = "N/A"
+
+
+    #Block 27
+    total_department_27 = filtered_df_HC_data_karyawan["Department"].nunique()
+    total_employee_active_27 = len(filtered_df_HC_data_karyawan)
+    volunteers_active_27 = len(df_HC_internship_and_volunteering[(df_HC_internship_and_volunteering["Status"]=="Volunteer") & (df_HC_internship_and_volunteering["Internship/Volunteering Status"] == "Active")])
+    avg_length_of_employment_27 = np.mean(pd.to_datetime(filtered_df_HC_data_karyawan["Contract End Date"], errors = 'coerce', dayfirst=True)-pd.to_datetime(filtered_df_HC_data_karyawan["Joining Date to YCAB"]))
+    avg_employee_age_27 = np.mean(calculate_age(filtered_df_HC_data_karyawan["Birth Date"],year))
+    turnover_rate_ytd_27 = "N/A"
+    retention_rate_ytd_27 = "N/A"
+
+    
+    #Block 28
+    total_training_all_types_28 = "N/A"
+    total_employee_active_28 = "N/A"
+    total_employee_graduated_28 = "N/A"
+    employee_trained_percentage_28 = "N/A"
+    staff_turnover_rate_28 = "N/A"
+    avg_score_employee_to_leader_28 = "N/A"
+    avg_score_employee_to_organization_28 = "N/A"
+    avg_score_department_to_organization_28 = "N/A"
+
+    
+    #Block 29
+    total_employee_per_department_29 = "N/A"
+    full_time_per_dept_29 = "N/A"
+    contract_per_dept_29 = "N/A"
+    employee_resigned_29 = "N/A"
+
+    
+    #Block 30
+    reasons_to_resign_30 = "N/A"
+
+    
+    #Block 31
+    compulsory_training_per_department_31 = "N/A"
+
+    
+    #Block 32
+    avg_satisfaction_32 = "N/A"
+    avg_sla_compliance_32 = "N/A"
+    total_requests_32 = "N/A"
+    total_sla_compliance_32 = "N/A"
+    total_sla_breach_32 = "N/A"
+    sla_detail_per_dept_32 = "N/A"
+    avg_satisfaction_per_dept_32 = "N/A"
+    request_per_dept_32 = "N/A"
+    avg_resolution_time_per_dept_32 = "N/A"
+    sla_compliance_percent_per_dept_32 = "N/A"
+    total_sla_compliance_32_2 = "N/A"
+    total_sla_breach_32_2 = "N/A"
+
+    #Block 33
+    total_kpi_33 = "N/A"
+    avg_kpi_progress_33 = "N/A"
+    on_track_33 = "N/A"
+    warning_33 = "N/A"
+    at_risk_33 = "N/A"
+    kpi_data_per_dept_33 = "N/A"
+
+    #Block 34
+    sponsors_restricted_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Restricted")]["Partner Name"].nunique()
+    sponsors_restricted_funds_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Restricted")]["Good Fund (Received)"].sum()
+    sponsor_unrestricted_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Unrestricted")]["Partner Name"].nunique()
+    sponsors_unrestricted_funds_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Unrestricted")]["Good Fund (Received)"].sum()
+    funds_from_sponsor_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Restricted")]["Good Fund (Received)"].sum()
+    internal_budget_34 = df_income_expenditure[(df_income_expenditure["Year"] == year) & (df_income_expenditure["Fund Category"] == "Restricted")]["Direct Project Budget"].sum()
+    total_actual_34 = "N/A"
+    percentage_used_34 = "N/A"
+    table_program_expense_34 = "N/A"
+
+    #Block 35
+    total_department_35 = "N/A"
+    total_employees_35 = "N/A"
+    total_payroll_35 = "N/A"
+
+    #Block 36
+    realized_36 = df_income_expenditure[df_income_expenditure["Year"] == year]["Good Fund (Received)"].sum()
+    realized_percentage_36 = "N/A"
+    fundraising_achievement_graph_36 = "N/A"
+
+    #Block 37
+    total_sponsor_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Partner Name"].nunique()
+    total_potential_funds_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Pipeline (Submitted)"].sum()
+    total_realized_funds_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Secured Fund (Signed)"].sum()
+
+        # Block 1: ES:Beneficiaries 2.jpg
+    block_1 = [
+        total_beneficiaries_1,
+        direct_beneficiaries_1,
+        indirect_beneficiaries_1,
+        mothers_1,
+        youth_1,
+        mothers_earn_1,
+        youth_earn_1,
+        mothers_learn_1,
+        youth_learn_1,
+        resilience_response_1,
+        like_minded_org_1
+    ]
+
+    # Block 2: ES - Program 1 (new).png
+    block_2 = [
+        completion_rate_2,
+        avg_post_test_score_2,
+        avg_satisfaction_2,
+        youth_learn_scholarship_2,
+        youth_learn_vocational_training_2,
+        youth_learn_rumah_belajar_batik_2,
+        youth_earn_scholarship_2,
+        youth_earn_employment_2,
+        youth_earn_rumah_belajar_batik_2,
+        avg_income_youth_2
+    ]
+
+    # Block 3: ES - Program 2 (new).png
+    block_3 = [
+        completion_rate_3,
+        avg_post_test_score_3,
+        avg_satisfaction_3
+    ]
+
+    # Block 4: ES:Partnership 1.jpg
+    block_4 = [
+        total_income_ycab_foundation_4,
+        restricted_4,
+        unrestricted_4,
+        sankey_chart_4
+    ]
+
+    # Block 5: ES:Comms 1.jpg
+    block_5 = [
+        total_digital_outreach_5,
+        social_media_engagement_5,
+        website_visitors_5,
+        media_coverage_5,
+        total_media_partner_5,
+        media_partner_per_tier_5
+    ]
+
+    # Block 6: ES:HC 1.jpg
+    block_6 = [
+        average_annual_expenses_6,
+        average_monthly_expenses_6,
+        number_of_employee_6,
+        average_age_6,
+        average_gender_6,
+        average_year_of_service_6,
+        average_turnover_rate_6
+    ]
+
+    # Block 7: Stakeholder:Student 1.jpg
+    block_7 = [
+        total_scholars_7,
+        total_school_university_7,
+        most_scholarships_7,
+        income_range_7,
+        total_student_learn_7,
+        total_program_7,
+        income_range_7_2,
+        avg_length_of_work_7
+    ]
+
+    # Block 8: Stakeholder:Student 2.jpg
+    block_8 = [
+        total_student_learn_8,
+        graduated_8,
+        not_graduated_8,
+        total_school_university_8,
+        most_scholarships_8,
+        youth_earn_8,
+        avg_income_8,
+        avg_length_of_work_8
+    ]
+
+    # Block 9: Stakeholder:Student 3.jpg
+    block_9 = [
+        youth_individual_data_9
+    ]
+
+    # Block 10: Stakeholder:Student 4.jpg
+    block_10 = [
+        youth_individual_scholarship_data_10
+    ]
+
+    # Block 11: Stakeholder:Student 5.jpg
+    block_11 = [
+        total_youth_learn_11,
+        total_program_youth_learn_11,
+        program_success_11,
+        completion_rate_11
+    ]
+    # Block 12: Stakeholder:Student 5b.jpg
+    block_12 = [
+        youth_earn_from_youth_learn_program_12,
+        avg_income_12,
+        avg_length_of_work_12
+    ]
+
+    # Block 13: Stakeholder:Student 6.jpg
+    block_13 = [
+        total_youth_earn_13,
+        youth_earn_from_scholarships_13,
+        youth_earn_from_youth_learn_program_13,
+        avg_youth_earn_income_13,
+        avg_length_of_work_13
+    ]
+
+    # Block 14: Stakeholder:Student 7.jpg
+    block_14 = [
+        linkedin_engagement_14,
+        youtube_engagement_14,
+        instagram_engagement_14,
+        tiktok_engagement_14,
+        website_visitors_14,
+        media_coverage_14,
+        media_partners_14,
+        media_coverage_14_2
+    ]
+
+    # Block 15: Stakeholder:Mothers 1.jpg
+    block_15 = [
+        total_mothers_15,
+        mothers_got_loans_15,
+        avg_family_income_15,
+        total_children_got_scholarship_15,
+        total_program_mothers_learn_15,
+        program_success_15,
+        completion_rate_15
+    ]
+    # Block 16: Stakeholder:Mothers 2.jpg
+    block_16 = [
+        mothers_earn_individual_data_16,
+        mothers_earn_anak_pintar_16
+    ]
+
+    # Block 17: Stakeholder - Mothers 3 (new).png
+    block_17 = [
+        laporan_bisnis_17,
+        total_loan_17,
+        graph_loan_cycle_17
+    ]
+
+    # Block 18: Stakeholder:Educator 1.jpg
+    block_18 = [
+        total_educators_18,
+        indirect_student_18,
+        total_school_18,
+        program_for_educators_18,
+        program_success_18,
+        completion_rate_18
+    ]
+
+        # Block 19: Stakeholder:Partners 1.jpg
+    block_19 = [
+        total_partners_19,
+        program_with_partner_19,
+        total_enablers_19
+    ]
+
+    # Block 20: Stakeholder:Partners 2.jpg
+    block_20 = [
+        category_partner_20,
+        total_program_20,
+        total_funding_20,
+        avg_satisfaction_20
+    ]
+
+    # Block 21: Stakeholder:Partners 3.jpg
+    block_21 = [
+        total_program_enabler_21,
+        total_beneficiaries_21
+    ]
+
+    # Block 22: Stakeholder-Likeminded Org 1.png
+    block_22 = [
+        total_like_minded_organization_22,
+        total_funding_22,
+        total_program_22,
+        total_indirect_beneficiaries_22
+    ]
+
+    # Block 23: Stakeholder-Likeminded Org 2.png
+    block_23 = [
+        like_minded_org_detail_23
+    ]
+
+    # Block 24: Stakeholder:ER 1.jpg
+    block_24 = [
+        total_activity_24,
+        total_beneficiaries_24
+    ]
+
+    # Block 25: Stakeholder:Program 1.jpg
+    block_25 = [
+        total_program_youth_learn_25,
+        most_program_beneficiaries_area_25,
+        program_success_25,
+        completion_rate_25,
+        mothers_program_25,
+        program_success_25_2,
+        completion_rate_25_2
+    ]
+
+    # Block 26: Stakeholder - Program 2 (new).png
+    block_26 = [
+        detail_per_program_26,
+        delta_knowledge_challenge_26,
+        average_delta_knowledge_26
+    ]
+
+    # Block 27: LG 1.jpg
+    block_27 = [
+        total_department_27,
+        total_employee_active_27,
+        volunteers_active_27,
+        avg_length_of_employment_27,
+        avg_employee_age_27,
+        turnover_rate_ytd_27,
+        retention_rate_ytd_27
+    ]
+
+    # Block 28: LG 1b.jpg
+    block_28 = [
+        total_training_all_types_28,
+        total_employee_active_28,
+        total_employee_graduated_28,
+        employee_trained_percentage_28,
+        staff_turnover_rate_28,
+        avg_score_employee_to_leader_28,
+        avg_score_employee_to_organization_28,
+        avg_score_department_to_organization_28
+    ]
+
+    # Block 29: LG 2.jpg
+    block_29 = [
+        total_employee_per_department_29,
+        full_time_per_dept_29,
+        contract_per_dept_29,
+        employee_resigned_29
+    ]
+
+    # Block 30: LG 3.jpg
+    block_30 = [
+        reasons_to_resign_30
+    ]
+
+    # Block 31: LG 4.jpg
+    block_31 = [
+        compulsory_training_per_department_31
+    ]
+
+    # Block 32: BP 1.jpg
+    block_32 = [
+        avg_satisfaction_32,
+        avg_sla_compliance_32,
+        total_requests_32,
+        total_sla_compliance_32,
+        total_sla_breach_32,
+        sla_detail_per_dept_32,
+        avg_satisfaction_per_dept_32,
+        request_per_dept_32,
+        avg_resolution_time_per_dept_32,
+        sla_compliance_percent_per_dept_32,
+        total_sla_compliance_32_2,
+        total_sla_breach_32_2
+    ]
+    # Block 33: KPI 1.jpg
+    block_33 = [
+        total_kpi_33,
+        avg_kpi_progress_33,
+        on_track_33,
+        warning_33,
+        at_risk_33,
+        kpi_data_per_dept_33
+    ]
+
+    # Block 34: Finance 1 (new).png
+    block_34 = [
+        sponsors_restricted_34,
+        sponsors_restricted_funds_34,
+        sponsor_unrestricted_34,
+        sponsors_unrestricted_funds_34,
+        funds_from_sponsor_34,
+        internal_budget_34,
+        total_actual_34,
+        percentage_used_34,
+        table_program_expense_34
+    ]
+
+    # Block 35: Finance 2 (new).png
+    block_35 = [
+        total_department_35,
+        total_employees_35,
+        total_payroll_35
+    ]
+
+    # Block 36: Finance 3 (new).png
+    block_36 = [
+        realized_36,
+        realized_percentage_36,
+        fundraising_achievement_graph_36
+    ]
+
+    # Block 37: Finance 4 (new).png
+    block_37 = [
+        total_sponsor_37,
+        total_potential_funds_37,
+        total_realized_funds_37
+    ]
+    column = [
+    block_1,
+    block_2,
+    block_3,
+    block_4,
+    block_5,
+    block_6,
+    block_7,
+    block_8,
+    block_9,
+    block_10,
+    block_11,
+    block_12,
+    block_13,
+    block_14,
+    block_15,
+    block_16,
+    block_17,
+    block_18,
+    block_19,
+    block_20,
+    block_21,
+    block_22,
+    block_23,
+    block_24,
+    block_25,
+    block_26,
+    block_27,
+    block_28,
+    block_29,
+    block_30,
+    block_31,
+    block_32,
+    block_33,
+    block_34,
+    block_35,
+    block_36,
+    block_37
+    ]
+
+    output_df[f"Result {year}"] = block_27
+
+output_file = "checklist_output.csv"
+to_csv(output_df, output_file)

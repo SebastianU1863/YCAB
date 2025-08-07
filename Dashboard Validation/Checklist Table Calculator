@@ -293,21 +293,21 @@ for year in [2024,2025]:
     avg_income_12 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Salary per month"])
     avg_length_of_work_12 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Length of Employment"])
     
-    #Block 13 - Bookmark
-    total_youth_earn_13 = "N/A"
-    youth_earn_from_scholarships_13 = "N/A"
-    youth_earn_from_youth_learn_program_13 = "N/A"
-    avg_youth_earn_income_13 = "N/A"
-    avg_length_of_work_13 = "N/A"
+    #Block 13
+    total_youth_earn_13 = len(df_youth_earn[df_youth_earn.iloc[:, 20].astype(str).str.contains(str(year))])
+    youth_earn_from_scholarships_13 = len(df_youth_earn[(df_youth_earn.iloc[:, 20].astype(str).str.contains(str(year))) & (df_youth_earn["Program Type"] == "Scholarship")])
+    youth_earn_from_youth_learn_program_13 = len(df_youth_earn[(df_youth_earn.iloc[:, 20].astype(str).str.contains(str(year))) & (df_youth_earn["Program Type"] == "RBB")])
+    avg_youth_earn_income_13 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Salary per month"])
+    avg_length_of_work_13 = np.nanmean(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"]["Length of Employment"])
     
     #Block 14
-    linkedin_engagement_14 = "N/A"
-    youtube_engagement_14 = "N/A"
-    instagram_engagement_14 = "N/A"
-    tiktok_engagement_14 = "N/A"
-    website_visitors_14 = "N/A"
-    media_coverage_14 = "N/A"
-    media_partners_14 = "N/A"
+    linkedin_engagement_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("LinkedIn"))]["Total Engagement"].sum()
+    youtube_engagement_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("YouTube"))]["Total Engagement"].sum()
+    instagram_engagement_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Instagram"))]["Total Engagement"].sum()
+    tiktok_engagement_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("TikTok"))]["Total Engagement"].sum()
+    website_visitors_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Website YCAB"))]["Views (Visitors)"].sum()
+    media_coverage_14 = len(df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Media Partner"))])
+    media_partners_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Media Partner"))]["Patner's Name"].nunique()
     media_coverage_14_2 = "N/A"
 
     #Block 15
@@ -352,7 +352,7 @@ for year in [2024,2025]:
     total_beneficiaries_21 = "N/A"
 
 
-    #Block 22
+    #Block 22 - Bookmark 1
     total_like_minded_organization_22 = "N/A"
     total_funding_22 = "N/A"
     total_program_22 = "N/A"
@@ -393,8 +393,8 @@ for year in [2024,2025]:
 
     
     #Block 28
-    total_training_all_types_28 = "N/A"
-    total_employee_active_28 = "N/A"
+    total_training_all_types_28 = df_HC_data_pengembangan_karyawan[df_HC_data_pengembangan_karyawan["Training Date"].astype(str).str.contains(str(year))]["Training Name"].nunique()
+    total_employee_active_28 = len(filtered_df_HC_data_karyawan)
     total_employee_graduated_28 = "N/A"
     employee_trained_percentage_28 = "N/A"
     staff_turnover_rate_28 = "N/A"
@@ -418,7 +418,7 @@ for year in [2024,2025]:
     compulsory_training_per_department_31 = "N/A"
 
     
-    #Block 32
+    #Block 32 - Bookmark 2
     avg_satisfaction_32 = "N/A"
     avg_sla_compliance_32 = "N/A"
     total_requests_32 = "N/A"
@@ -452,9 +452,9 @@ for year in [2024,2025]:
     table_program_expense_34 = "N/A"
 
     #Block 35
-    total_department_35 = "N/A"
-    total_employees_35 = "N/A"
-    total_payroll_35 = "N/A"
+    total_department_35 = filtered_df_HC_data_karyawan["Department"].nunique()
+    total_employees_35 = len(filtered_df_HC_data_karyawan)
+    total_payroll_35 = df_HC_salary[df_HC_salary["Year"] == year]["Total Salary Paid to Employee"].sum()
 
     #Block 36
     realized_36 = df_income_expenditure[df_income_expenditure["Year"] == year]["Good Fund (Received)"].sum()
@@ -465,7 +465,16 @@ for year in [2024,2025]:
     total_sponsor_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Partner Name"].nunique()
     total_potential_funds_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Pipeline (Submitted)"].sum()
     total_realized_funds_37 = df_partnership[(df_partnership["Year"]==year) & ((df_partnership["Channel"] == "Corporate") | (df_partnership["Channel"] == "Institution"))]["Secured Fund (Signed)"].sum()
+    total_corporate_partnership_37 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Channel"]=="Corporate")]["Secured Fund (Signed)"].sum()
+    total_institutional_partnership_37 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Channel"]=="Institution")]["Secured Fund (Signed)"].sum()
+    total_individual_fundraising_37 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Channel"]=="Individual")]["Secured Fund (Signed)"].sum()
+    total_digital_donations_37 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Channel"]=="Digital")]["Secured Fund (Signed)"].sum()
+    total_mutual_funds_37 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Channel"]=="Balanced Fund")]["Secured Fund (Signed)"].sum()
+    overall_income_37 = total_corporate_partnership_37+total_institutional_partnership_37+total_individual_fundraising_37+total_digital_donations_37+total_mutual_funds_37
 
+
+
+    
         # Block 1: ES:Beneficiaries 2.jpg
     block_1 = [
         total_beneficiaries_1,
@@ -499,7 +508,7 @@ for year in [2024,2025]:
     block_3 = [
         completion_rate_3,
         avg_post_test_score_3,
-        avg_satisfaction_3
+        avg_satisfaction_3,
     ]
 
     # Block 4: ES:Partnership 1.jpg
@@ -788,49 +797,55 @@ for year in [2024,2025]:
     block_37 = [
         total_sponsor_37,
         total_potential_funds_37,
-        total_realized_funds_37
+        total_realized_funds_37,
+        "N/A",
+        overall_income_37,
+        total_corporate_partnership_37,
+        total_institutional_partnership_37,
+        total_individual_fundraising_37,
+        total_digital_donations_37,
+        total_mutual_funds_37
     ]
-    column = [
-    block_1,
-    block_2,
-    block_3,
-    block_4,
-    block_5,
-    block_6,
-    block_7,
-    block_8,
-    block_9,
-    block_10,
-    block_11,
-    block_12,
-    block_13,
-    block_14,
-    block_15,
-    block_16,
-    block_17,
-    block_18,
-    block_19,
-    block_20,
-    block_21,
-    block_22,
-    block_23,
-    block_24,
-    block_25,
-    block_26,
-    block_27,
-    block_28,
-    block_29,
-    block_30,
-    block_31,
-    block_32,
-    block_33,
-    block_34,
-    block_35,
-    block_36,
-    block_37
-    ]
+    column =(
+    block_1+
+    block_2+
+    block_3+
+    block_4+
+    block_5+
+    block_6+
+    block_7+
+    block_8+
+    block_9+
+    block_10+
+    block_11+
+    block_12+
+    block_13+
+    block_14+
+    block_15+
+    block_16+
+    block_17+
+    block_18+
+    block_19+
+    block_20+
+    block_21+
+    block_22+
+    block_23+
+    block_24+
+    block_25+
+    block_26+
+    block_27+
+    block_28+
+    block_29+
+    block_30+
+    block_31+
+    block_32+
+    block_33+
+    block_34+
+    block_35+
+    block_36+
+    block_37)
 
-    output_df[f"Result {year}"] = block_27
+    output_df[f"Result {year}"] = column
 
 output_file = "checklist_output.csv"
 to_csv(output_df, output_file)

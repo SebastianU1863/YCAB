@@ -16,6 +16,7 @@ df_youth_earn = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xl
 df_RBB = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="RBB")
 df_mothers_learn_program = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Mothers Learn Program")
 df_mothers_earn = pd.read_excel(r"C:\Users\SHU\Downloads\MothersEarn_MasterDatabase.xlsx", sheet_name="Mothers Earn")
+df_resilience_response = pd.read_excel(r"C:\Users\SHU\Downloads\Program_MasterDatabase.xlsx", sheet_name="Resilience & Response Program")
 df_like_minded_organization = pd.read_excel(r"C:\Users\SHU\Downloads\LikeMindedOrganization_MasterDatabase.xlsx", sheet_name="Like-minded Org")
 df_income_expenditure = pd.read_excel(r"C:\Users\SHU\Downloads\FA_IncomeVsExpenditure.xlsx", sheet_name="Income vs Expenditure")
 df_partnership = pd.read_excel(r"C:\Users\SHU\Downloads\Partnership_MasterDatabase.xlsx", sheet_name="Partnership")
@@ -46,6 +47,7 @@ df_HC_internship_and_volunteering.columns = df_HC_internship_and_volunteering.il
 df_HC_turnover_and_retention.columns = df_HC_turnover_and_retention.iloc[0]
 df_HC_salary.columns = df_HC_salary.iloc[0]
 df_HC_data_surat_peringatan.columns = df_HC_data_surat_peringatan.iloc[0]
+df_resilience_response.columns = df_resilience_response.iloc[0]
 df_communication.columns = df_communication.iloc[0]
 
 df_program_list = df_program_list.iloc[3:].reset_index(drop=True)
@@ -68,6 +70,7 @@ df_HC_turnover_and_retention = df_HC_turnover_and_retention.iloc[3:].reset_index
 df_HC_salary = df_HC_salary.iloc[1:].reset_index(drop=True)
 df_HC_data_surat_peringatan = df_HC_data_surat_peringatan.iloc[3:].reset_index(drop=True)
 df_communication = df_communication.iloc[3:].reset_index(drop=True)
+df_resilience_response = df_resilience_response.iloc[3:].reset_index(drop=True)
 
 
 #Direct Beneficiaries
@@ -178,6 +181,11 @@ def youth_earn_cycle_1_2_filter(year: int):
 def get_df_active_mothers_earn(target_year: int):
     return df_mothers_earn[(df_mothers_earn["Year of Cycle 1"] <= target_year) & (df_mothers_earn["Year of Last Cycle"] >= target_year)]
 
+def get_average_year_of_service(filtered_df: pd.DataFrame):
+    filtered_df_contract_ended = filtered_df[pd.to_datetime(filtered_df["Contract End Date"], errors = 'coerce', dayfirst = True)< pd.to_datetime(date.today())]
+    filtered_df_contract_active = filtered_df[pd.to_datetime(filtered_df["Contract End Date"], errors = 'coerce', dayfirst = True) >= pd.to_datetime(date.today())]
+    return np.mean(pd.concat([pd.to_datetime(filtered_df_contract_ended["Contract End Date"], errors= 'coerce', dayfirst=True) - pd.to_datetime(filtered_df_contract_ended["Joining Date to YCAB"], errors= 'coerce', dayfirst=True), pd.to_datetime(date.today()) - pd.to_datetime(filtered_df_contract_active["Joining Date to YCAB"], errors= 'coerce', dayfirst=True)], axis = 1)).astype('timedelta64[D]')/np.timedelta64(1, 'D')
+
 output_df = pd.DataFrame()
 
 def to_csv(data_frame, output_file):
@@ -198,6 +206,7 @@ for year in [2024,2025]:
     rows_in_RBB = len(df_RBB[(df_RBB["Training Date"].astype(str).str.contains(str(year), na=False))])
     rows_in_youth_learn = number_of_rows(df_youth_learn_program,year)
     rows_in_educators_program = number_of_rows(df_educators_program,year)
+    rows_in_resilience_response = 0
     df_active_mothers_earn = get_df_active_mothers_earn(year)
     rows_in_youth_earn = len(df_youth_earn[(df_youth_earn.iloc[:,20].astype(str).str.contains(str(year), na=False))])
 
@@ -211,7 +220,7 @@ for year in [2024,2025]:
     youth_earn_1 = rows_in_youth_earn
     mothers_learn_1 = rows_in_mothers_learn
     youth_learn_1 = rows_in_scholarship+rows_in_vocational_training+rows_in_RBB+rows_in_youth_learn
-    resilience_response_1 = 0
+    resilience_response_1 = 0 #Fix as if there was data
     like_minded_org_1 = like_minded_org(year)
 
     
@@ -229,12 +238,12 @@ for year in [2024,2025]:
     avg_income_youth_2 = np.mean(df_youth_earn[(df_youth_earn.iloc[:,34].astype(str).str.contains(str(year), na=False))].iloc[:, 36])
 
     #Block 3
-    completion_rate_3 = "N/A"
-    avg_post_test_score_3 = "N/A"
-    avg_satisfaction_3 = "N/A"
+    completion_rate_3 = np.nanmean(filtered_df_program_list[filtered_df_program_list["Self-funded/Partner/Like-minded Organization?"]=="Partner"]["Avg. Completion Rate"])
+    avg_post_test_score_3 = np.nanmean(filtered_df_program_list[filtered_df_program_list["Self-funded/Partner/Like-minded Organization?"]=="Partner"]["Avg. Post Test"])
+    avg_satisfaction_3 = np.nanmean(filtered_df_program_list[filtered_df_program_list["Self-funded/Partner/Like-minded Organization?"]=="Partner"]["Avg. Satisfaction Rate"])
 
     #Block 4
-    total_income_ycab_foundation_4 = YCAB_income_sheet[YCAB_income_sheet["Year"]==year]["Income"].sum()
+    total_income_ycab_foundation_4 = YCAB_income_sheet[YCAB_income_sheet["Year"]==year]["Income"].sum() #Take the one that is not blanked and if they are both filled take the finance
     restricted_4 = YCAB_income_sheet[(YCAB_income_sheet["Fund Category"] == "Restricted") & (YCAB_income_sheet["Year"]==year)]["Income"].sum()
     unrestricted_4 = YCAB_income_sheet[(YCAB_income_sheet["Fund Category"] == "Unrestricted") & (YCAB_income_sheet["Year"]==year)]["Income"].sum()
     sankey_chart_4 = "N/A"
@@ -253,7 +262,7 @@ for year in [2024,2025]:
     number_of_employee_6 = "N/A"
     average_age_6 = np.mean(calculate_age(filtered_df_HC_data_karyawan["Birth Date"],year))
     average_gender_6 = len(filtered_df_HC_data_karyawan[filtered_df_HC_data_karyawan["Gender"] == "Laki-laki"])/len(filtered_df_HC_data_karyawan[filtered_df_HC_data_karyawan["Gender"] == "Perempuan"])
-    average_year_of_service_6 = "N/A"
+    average_year_of_service_6 = [get_average_year_of_service(df_HC_data_karyawan), get_average_year_of_service(filtered_df_HC_data_karyawan)]
     average_turnover_rate_6 = "N/A"
     
     #Block 7
@@ -263,8 +272,8 @@ for year in [2024,2025]:
     income_range_7 = "N/A"
     total_student_learn_7 = rows_in_vocational_training+rows_in_youth_learn+rows_in_RBB
     total_program_7 = len(filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"])
-    income_range_7_2 = "N/A"
-    avg_length_of_work_7 = "N/A"
+    income_range_7_2 = [min(df_youth_earn[df_youth_earn.iloc[:, 34].astype(str).str.contains(str(year))].iloc[:, 36]), max(df_youth_earn[df_youth_earn.iloc[:, 34].astype(str).str.contains(str(year))].iloc[:, 36])]
+    avg_length_of_work_7 = np.nanmean(df_youth_earn_cycle_1_2["Length of Employment"])
 
     #Block 8
     total_student_learn_8 = len(filtered_df_scholarship)
@@ -282,11 +291,11 @@ for year in [2024,2025]:
     #Block 10
     youth_individual_scholarship_data_10 = "N/A"
 
-    #Block 11
+    #Block 11 - Bookmark Important
     total_youth_learn_11 = rows_in_vocational_training+rows_in_youth_learn+rows_in_RBB
     total_program_youth_learn_11 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
-    program_success_11 = "N/A"
-    completion_rate_11 = "N/A"
+    program_success_11 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Youth Learn")]["Avg. Satisfaction Rate"])
+    completion_rate_11 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Youth Learn")]["Avg. Completion Rate"])
 
     #Block 12
     youth_earn_from_youth_learn_program_12 = len(df_youth_earn_cycle_1_2[df_youth_earn_cycle_1_2["Program Type"]=="RBB"])
@@ -310,14 +319,15 @@ for year in [2024,2025]:
     media_partners_14 = df_communication[(df_communication["Program Year"] == year) & (df_communication["Media"].astype(str).str.contains("Media Partner"))]["Patner's Name"].nunique()
     media_coverage_14_2 = "N/A"
 
-    #Block 15
-    total_mothers_15 = rows_in_mothers_learn+len(df_active_mothers_earn)
+    #Block 15 - Instructions have changed for total mothers
+    total_mothers_15 = pd.concat([df_mothers_learn_program[df_mothers_learn_program["Program Date"] == year]["NIK"],df_active_mothers_earn["NIK"]], axis = 0).nunique() #Fix and ask about the change in instructions
     mothers_got_loans_15 = len(df_active_mothers_earn)
-    avg_family_income_15 = np.nanmean(pd.concat([df_active_mothers_earn["Net Income per month (Cycle 1)"],df_active_mothers_earn["Net Income per month (Last Cycle)"]], axis=1))
-    total_children_got_scholarship_15 = len(df_scholarship[(df_scholarship["Cohort"].astype(str).str.contains(str(year), na=False)) & df_scholarship["Mother's NIK"].isin(df_active_mothers_earn["NIK"])])
+    #np.nanmean(pd.concat([df_active_mothers_earn["Net Income per month (Cycle 1)"],df_active_mothers_earn["Net Income per month (Last Cycle)"]], axis=1))
+    avg_family_income_15 = np.nanmean(df_active_mothers_earn["Net Income per month (Last Cycle)"])
+    total_children_got_scholarship_15 = len(df_scholarship[(df_scholarship["Cohort"].astype(str).str[:4].astype(int) <= year) & df_scholarship["Mother's NIK"].isin(df_active_mothers_earn["NIK"])])
     total_program_mothers_learn_15 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique() 
-    program_success_15 = "N/A"
-    completion_rate_15 = "N/A"
+    program_success_15 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Mothers Learn")]["Avg. Satisfaction Rate"])
+    completion_rate_15 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Mothers Learn")]["Avg. Completion Rate"])
     
     #Block 16
     mothers_earn_individual_data_16 = "N/A"
@@ -333,11 +343,11 @@ for year in [2024,2025]:
     indirect_student_18 = len(df_youth_learn_program[(df_youth_learn_program["Type of Beneficiary"] == 'Indirect') & (df_youth_learn_program["Program Date"].astype(str).str.contains(str(year), na=False)) & (df_youth_learn_program["Educator's NIK (if the beneficiary is from Educators Program)"].notnull())])
     total_school_18 = df_educators_program[df_educators_program["Program Date"].astype(str).str.contains(str(year), na=False)]["Institution Name"].nunique()
     program_for_educators_18 = program_for_educators = len(filtered_df_program_list[(filtered_df_program_list["Program Category"] == "Youth Learn") & (filtered_df_program_list["Beneficiary Category"] == "Educators")])
-    program_success_18 = "N/A"
-    completion_rate_18 = "N/A"
+    program_success_18 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Beneficiary Category"]=="Educators")&(filtered_df_program_list["Program Category"]=="Youth Learn")]["Avg. Satisfaction Rate"])
+    completion_rate_18 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Beneficiary Category"]=="Educators")&(filtered_df_program_list["Program Category"]=="Youth Learn")]["Avg. Completion Rate"])
 
     #Block 19
-    total_partners_19 = df_partnership[df_partnership["Year"]==year]["Partner Name"].nunique()
+    total_partners_19 = df_partnership[(df_partnership["Year"]==year) & (~df_partnership["Secured Fund (Signed)"].isna())]["Partner Name"].nunique() #notify change makes sure secured fund was secured
     program_with_partner_19 = df_partnership[(df_partnership["Year"]==year) & (df_partnership["Fund Category"]=="Restricted")]["Program Name"].nunique()
     total_enablers_19 = df_enablers[df_enablers["Date"].astype(str).str.contains(str(year), na=False)]["Enabler Name"].nunique()
     
@@ -353,10 +363,10 @@ for year in [2024,2025]:
 
 
     #Block 22 - Bookmark 1
-    total_like_minded_organization_22 = "N/A"
-    total_funding_22 = "N/A"
-    total_program_22 = "N/A"
-    total_indirect_beneficiaries_22 = "N/A"
+    total_like_minded_organization_22 = df_like_minded_organization[df_like_minded_organization["Year"] == year]["Organization Name"].nunique()
+    total_funding_22 = df_like_minded_organization[df_like_minded_organization["Year"] == year]["Funding"].sum()
+    total_program_22 = df_like_minded_organization[df_like_minded_organization["Year"] == year]["Program Name"].nunique()
+    total_indirect_beneficiaries_22 = df_like_minded_organization[df_like_minded_organization["Year"] == year]["Number of Beneficiaries"].sum()
 
     #Block 23
     like_minded_org_detail_23 = "N/A"
@@ -370,11 +380,11 @@ for year in [2024,2025]:
     #Block 25
     total_program_youth_learn_25 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
     most_program_beneficiaries_area_25 = "N/A"
-    program_success_25 = "N/A"
-    completion_rate_25 = "N/A"
+    program_success_25 =  np.nanmean(filtered_df_program_list[filtered_df_program_list["Program Category"]=="Youth Learn"]["Avg. Satisfaction Rate"])
+    completion_rate_25 = np.nanmean(filtered_df_program_list[filtered_df_program_list["Program Category"]=="Youth Learn"]["Avg. Completion Rate"])
     mothers_program_25 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique()
-    program_success_25_2 = "N/A"
-    completion_rate_25_2 = "N/A"
+    program_success_25_2 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Mothers Learn")]["Avg. Satisfaction Rate"])
+    completion_rate_25_2 = np.nanmean(filtered_df_program_list[(filtered_df_program_list["Program Category"]=="Mothers Learn")]["Avg. Completion Rate"])
 
     #Block 26
     detail_per_program_26 = filtered_df_program_list[filtered_df_program_list["Program Category"] == "Mothers Learn"]["Program Name"].nunique() + filtered_df_program_list[filtered_df_program_list["Program Category"] == "Youth Learn"]["Program Name"].nunique()
@@ -845,7 +855,8 @@ for year in [2024,2025]:
     block_36+
     block_37)
 
-    output_df[f"Result {year}"] = column
+    output_df[f"Result {year}"] = block_37
+
 
 output_file = "checklist_output.csv"
 to_csv(output_df, output_file)

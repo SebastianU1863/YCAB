@@ -1,0 +1,48 @@
+import pandas as pd
+import tkinter as tk
+import sys
+from tkinter import filedialog
+from tkinter import messagebox
+from openpyxl import load_workbook
+
+def open_file_dialog():
+    root = tk.Tk()
+    root.withdraw() 
+    file_path = filedialog.askopenfilename(
+        title="Select a file",
+    )
+    if file_path:
+        print(f"Selected file: {file_path}")
+        return get_amount_spent(file_path)
+    
+def get_amount_spent(file_path):
+    header = ["Department", "Project", "Budget Code", "Description", "Budget Amount", "Actual Amount Spent", "Remaining Budget", "Burn Rate"]
+    try:
+        file = pd.ExcelFile(file_path)
+        df_list = []
+    except Exception as e:
+        popup("Unable to read file. This program can only accept .xlsx files.")
+        print(e)
+        sys.exit()
+    for sheet in file.sheet_names:
+        df_sheet = pd.read_excel(file_path, sheet_name=sheet)
+        df_BvA = pd.DataFrame(columns=header)
+        df_BvA["Department"] = df_sheet["DEPARTMENTNAME"]
+        df_BvA["Project"] = df_sheet["PROJECTNAME"]
+        df_BvA["Actual Amount Spent"] = df_sheet["AMOUNT"]
+        df_BvA["Description"] = df_sheet["DESCRIPTION"]
+        df_BvA.to_excel("BvA.xlsx", sheet_name=sheet, index=False)  
+        df_list.append(df_BvA)
+    combined_df = pd.concat(df_list, ignore_index=True)
+    with pd.ExcelWriter("BvA.xlsx") as writer:
+        combined_df.to_excel(writer, sheet_name = "Sheet 1", index = False)
+        for column in combined_df:
+            column_length = max(combined_df[column].astype(str).map(len).max(), len(column))
+            col_idx = combined_df.columns.get_loc(column)
+            writer.sheets['Sheet 1'].set_column(col_idx, col_idx, column_length)
+
+
+def popup(text: str):
+    messagebox.showinfo("Error", text)
+
+open_file_dialog()

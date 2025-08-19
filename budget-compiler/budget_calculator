@@ -12,7 +12,6 @@ def open_file_dialog():
         title="Select a file",
     )
     if file_path:
-        print(f"Selected file: {file_path}")
         return get_amount_spent(file_path)
     
 def get_amount_spent(file_path):
@@ -24,22 +23,51 @@ def get_amount_spent(file_path):
         popup("Unable to read file. This program can only accept .xlsx files.")
         print(e)
         sys.exit()
+
+    #This specific program only works for templates like the 'template other payment mass upload'    
     for sheet in file.sheet_names:
         df_sheet = pd.read_excel(file_path, sheet_name=sheet)
         df_BvA = pd.DataFrame(columns=header)
         df_BvA["Department"] = df_sheet["DEPARTMENTNAME"]
         df_BvA["Project"] = df_sheet["PROJECTNAME"]
-        df_BvA["Actual Amount Spent"] = df_sheet["AMOUNT"]
+        #Because this program is reliant on Kode Budget, Kode Budget must be filled. If it is not, the program will autofill it with the word 'dummy'
+        df_BvA["Budget Code"] = df_sheet["KODE BUDGET"]
+        df_BvA["Budget Code"] = df_BvA["Budget Code"].fillna("Dummy")
+        budget_codes = list(set(df_BvA["Budget Code"].values))
         df_BvA["Description"] = df_sheet["DESCRIPTION"]
+        df_BvA["Actual Amount Spent"] = df_sheet["AMOUNT"]
+        df_BvA["Budget Amount"] = 100000
+        df_BvA.sort_values(by="Budget Code", inplace=True)
+        for i in range(0, len(df_BvA["Actual Amount Spent"])):
+            if df_BvA["Budget Code"][i] in budget_codes:
+                budget_codes.remove(df_BvA["Budget Code"][i])
+                df_BvA["Remaining Budget"][i] = df_BvA["Budget Amount"][i]-df_BvA["Actual Amount Spent"][i]
+            else:
+                df_BvA["Remaining Budget"][i] = df_BvA["Remaining Budget"][i-1]-df_BvA["Actual Amount Spent"][i]
+        df_BvA["Burn Rate"] = df_BvA["Actual Amount Spent"]/df_BvA["Budget Amount"]
         df_BvA.to_excel("BvA.xlsx", sheet_name=sheet, index=False)  
         df_list.append(df_BvA)
     combined_df = pd.concat(df_list, ignore_index=True)
+    df_summary = pd.DataFrame(columns = header)
+    budget_codes = list(set(combined_df["Budget Code"].values))
+    for i in budget_codes:
+        filtered_combined_df = combined_df[combined_df["Budget Code"]==i]
+        index_low_remaining_budget = filtered_combined_df[filtered_combined_df["Remaining Budget"] == min(filtered_combined_df["Remaining Budget"])].index
+        row_to_add = filtered_combined_df.iloc[index_low_remaining_budget]
+        row_to_add["Actual Amount Spent"] = filtered_combined_df["Actual Amount Spent"].sum()
+        row_to_add["Burn Rate"] = row_to_add["Actual Amount Spent"]/row_to_add["Budget Amount"]
+        df_summary = pd.concat([df_summary, row_to_add], axis = 0).reset_index(drop = True)
     with pd.ExcelWriter("BvA.xlsx") as writer:
-        combined_df.to_excel(writer, sheet_name = "Sheet 1", index = False)
+        combined_df.to_excel(writer, sheet_name = "BvA", index = False)
+        df_summary.to_excel(writer, sheet_name = "Summary", index=False)
         for column in combined_df:
             column_length = max(combined_df[column].astype(str).map(len).max(), len(column))
             col_idx = combined_df.columns.get_loc(column)
-            writer.sheets['Sheet 1'].set_column(col_idx, col_idx, column_length)
+            writer.sheets['BvA'].set_column(col_idx, col_idx, column_length)
+        for column in df_summary:
+            column_length = max(df_summary[column].astype(str).map(len).max(), len(column))
+            col_idx = df_summary.columns.get_loc(column)
+            writer.sheets['Summary'].set_column(col_idx, col_idx, column_length)
 
 
 def popup(text: str):

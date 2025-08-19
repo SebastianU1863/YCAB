@@ -3,51 +3,58 @@ import tkinter as tk
 import sys
 from tkinter import filedialog
 from tkinter import messagebox
-from openpyxl import load_workbook
 
 def open_file_dialog():
     root = tk.Tk()
     root.withdraw() 
-    file_path = filedialog.askopenfilename(
-        title="Select a file",
+    file_paths = filedialog.askopenfilenames(
+        title="Select a file or select multiple files",
     )
-    if file_path:
-        return get_amount_spent(file_path)
+    if file_paths:
+        return get_amount_spent(file_paths)
     
-def get_amount_spent(file_path):
+def get_amount_spent(file_paths):
     header = ["Department", "Project", "Budget Code", "Description", "Budget Amount", "Actual Amount Spent", "Remaining Budget", "Burn Rate"]
-    try:
-        file = pd.ExcelFile(file_path)
-        df_list = []
-    except Exception as e:
-        popup("Unable to read file. This program can only accept .xlsx files.")
-        print(e)
-        sys.exit()
+    combined_df = pd.DataFrame(columns=header)
+    
+    #Read each sheet for important data like budget amounts and amount spent
+    for i in range(len(file_paths)):
+        try:
+            file = pd.ExcelFile(file_paths[i])
+            df_list = [combined_df]
+        except Exception as e:
+            popup("Unable to read file. This program can only accept .xlsx files.")
+            print(e)
+            sys.exit()
 
-    #This specific program only works for templates like the 'template other payment mass upload'    
-    for sheet in file.sheet_names:
-        df_sheet = pd.read_excel(file_path, sheet_name=sheet)
-        df_BvA = pd.DataFrame(columns=header)
-        df_BvA["Department"] = df_sheet["DEPARTMENTNAME"]
-        df_BvA["Project"] = df_sheet["PROJECTNAME"]
-        #Because this program is reliant on Kode Budget, Kode Budget must be filled. If it is not, the program will autofill it with the word 'dummy'
-        df_BvA["Budget Code"] = df_sheet["KODE BUDGET"]
-        df_BvA["Budget Code"] = df_BvA["Budget Code"].fillna("Dummy")
-        budget_codes = list(set(df_BvA["Budget Code"].values))
-        df_BvA["Description"] = df_sheet["DESCRIPTION"]
-        df_BvA["Actual Amount Spent"] = df_sheet["AMOUNT"]
-        df_BvA["Budget Amount"] = 100000
-        df_BvA.sort_values(by="Budget Code", inplace=True)
-        for i in range(0, len(df_BvA["Actual Amount Spent"])):
-            if df_BvA["Budget Code"][i] in budget_codes:
-                budget_codes.remove(df_BvA["Budget Code"][i])
-                df_BvA["Remaining Budget"][i] = df_BvA["Budget Amount"][i]-df_BvA["Actual Amount Spent"][i]
-            else:
-                df_BvA["Remaining Budget"][i] = df_BvA["Remaining Budget"][i-1]-df_BvA["Actual Amount Spent"][i]
-        df_BvA["Burn Rate"] = df_BvA["Actual Amount Spent"]/df_BvA["Budget Amount"]
-        df_BvA.to_excel("BvA.xlsx", sheet_name=sheet, index=False)  
-        df_list.append(df_BvA)
-    combined_df = pd.concat(df_list, ignore_index=True)
+        #This specific program only works for templates like the 'template other payment mass upload'    
+        for sheet in file.sheet_names:
+            df_sheet = pd.read_excel(file_paths[i], sheet_name=sheet)
+            df_BvA = pd.DataFrame(columns=header)
+            df_BvA["Department"] = df_sheet["DEPARTMENTNAME"]
+            df_BvA["Project"] = df_sheet["PROJECTNAME"]
+            #Because this program is reliant on Kode Budget, Kode Budget must be filled. If it is not, the program will autofill it with the word 'dummy'
+            df_BvA["Budget Code"] = df_sheet["KODE BUDGET"]
+            df_BvA["Budget Code"] = df_BvA["Budget Code"].fillna("Dummy")
+            df_BvA["Description"] = df_sheet["DESCRIPTION"]
+            df_BvA["Actual Amount Spent"] = df_sheet["AMOUNT"]
+            df_BvA["Budget Amount"] = 100000
+            df_BvA["Burn Rate"] = df_BvA["Actual Amount Spent"]/df_BvA["Budget Amount"]
+            df_list.append(df_BvA)
+        combined_df = pd.concat(df_list, ignore_index=True)
+   
+    #Calculate the Remaining Budget using the amount spent data and the budget amount data
+    budget_codes = list(set(combined_df["Budget Code"].values))
+    combined_df.sort_values(by="Budget Code", inplace=True)
+    for i in range(0, len(combined_df["Actual Amount Spent"])):
+        if combined_df["Budget Code"][i] in budget_codes:
+            budget_codes.remove(combined_df["Budget Code"][i])
+            combined_df["Remaining Budget"][i] = combined_df["Budget Amount"][i]-combined_df["Actual Amount Spent"][i]
+        else:
+            combined_df["Remaining Budget"][i] = combined_df["Remaining Budget"][i-1]-combined_df["Actual Amount Spent"][i]
+    combined_df.sort_values(by="Budget Code", inplace=True)
+    
+    #Create a summary page based on the lowest remaining budget data for each code
     df_summary = pd.DataFrame(columns = header)
     budget_codes = list(set(combined_df["Budget Code"].values))
     for i in budget_codes:
@@ -57,6 +64,8 @@ def get_amount_spent(file_path):
         row_to_add["Actual Amount Spent"] = filtered_combined_df["Actual Amount Spent"].sum()
         row_to_add["Burn Rate"] = row_to_add["Actual Amount Spent"]/row_to_add["Budget Amount"]
         df_summary = pd.concat([df_summary, row_to_add], axis = 0).reset_index(drop = True)
+    
+    #Write dataframes to excel sheet
     with pd.ExcelWriter("BvA.xlsx") as writer:
         combined_df.to_excel(writer, sheet_name = "BvA", index = False)
         df_summary.to_excel(writer, sheet_name = "Summary", index=False)
